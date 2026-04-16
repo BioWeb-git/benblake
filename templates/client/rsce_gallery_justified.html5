@@ -66,6 +66,7 @@
         <?php if ($image): ?>
             <a
                 href="<?= $image->singleSRC ?>"
+                class="is-animated"
                 data-pswp-width="<?= $image->width ?>"
                 data-pswp-height="<?= $image->height ?>"
             >
@@ -85,7 +86,12 @@
 <?php $GLOBALS['TL_BODY'][] = '
     <script>
         jQuery(function ($) {
-            $("#justified-gallery-' . $this->id . '").justifiedGallery({
+            var galleryId = "justified-gallery-' . $this->id . '";
+            console.log("Attempting to init gallery: " + galleryId);
+            var $gallery = $("#" + galleryId);
+            console.log("Element found: " + $gallery.length);
+
+            $gallery.justifiedGallery({
                 selector: "a, figure:not(.spinner)",
                 rowHeight: ' . (int)$rowHeight . ',
                 maxRowHeight: "' . $maxRowHeight . '",
@@ -97,6 +103,28 @@
                 captions: ' . $captions . ',
                 target: "' . ($this->target ?: '_self') . '",
             });
+
+            // Polling de sécurité pour forcer les animations au fur et à mesure
+            var checkCount = 0;
+            var checker = setInterval(function() {
+                var $animated = $gallery.find(".is-animated:not(.in-view)");
+                if ($animated.length === 0 && checkCount > 10) {
+                    clearInterval(checker);
+                    return;
+                }
+
+                var windowHeight = $(window).height();
+                $animated.each(function() {
+                    if (this.style.top === "") return;
+                    
+                    var rect = this.getBoundingClientRect();
+                    if (rect.top > 0 && rect.top < windowHeight * 0.96) {
+                        $(this).addClass("in-view has-shown").removeClass("not-in-view");
+                    }
+                });
+
+                if (++checkCount > 100) clearInterval(checker);
+            }, 100);
         });
     </script>
     <script type="module">

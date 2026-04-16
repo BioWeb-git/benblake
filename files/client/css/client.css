@@ -20099,12 +20099,22 @@ button:active,
 }
 
 /* ===========================================
- * Gallery Hover Effects
+ * Gallery Hover Effects & Animations
  * ======================================== */
 .content-gallery a {
   overflow: hidden !important;
-  display: block;
+  display: inline-block;
   background: black;
+}
+.content-gallery a.is-animated {
+  opacity: 0.3;
+  transform: translateY(50px) scale(0.95);
+  transition: opacity 2s ease, transform 2.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  will-change: transform, opacity;
+}
+.content-gallery a.is-animated.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 .content-gallery a img {
   transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 1.2s ease, opacity 0.5s ease !important;

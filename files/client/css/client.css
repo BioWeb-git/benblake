@@ -20093,3 +20093,7 @@ button:active,
 .centered-wrapper.-color-inverted a {
   color: white !important;
 }
+
+.contao-cookiebar .highlight .success {
+  color: green !important;
+}

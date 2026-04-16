@@ -882,3 +882,22 @@ button,
 .contao-cookiebar .highlight .success {
   color: green !important;
 }
+
+/* ===========================================
+ * Gallery Hover Effects
+ * ======================================== */
+.content-gallery a {
+  overflow: hidden !important;
+  display: block;
+  background: $black;
+
+  img {
+    transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), filter 1.2s ease, opacity 0.5s ease !important;
+    filter: brightness(0.9) grayscale(0.1);
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+    filter: brightness(1.1) grayscale(0);
+  }
+}

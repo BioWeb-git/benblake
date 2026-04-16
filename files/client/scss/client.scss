@@ -6,7 +6,33 @@
   font-size: 1.2em;
 }
 
-h1,
+@keyframes titleAppear {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(15px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+h1 {
+  font-weight: 300;
+  animation: titleAppear 2.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+
+  strong {
+    font-weight: 800;
+    display: inline-block;
+    animation: titleAppear 2.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    animation-delay: 0.2s;
+    opacity: 0; // Pour attendre le début de son animation propre
+  }
+}
+
 h2,
 h3 {
   font-weight: 300;
@@ -15,6 +41,7 @@ h3 {
     font-weight: 800;
   }
 }
+
 
 /* ===========================================
  * Global Styles (Header)

@@ -1,0 +1,38 @@
+<?php
+// templates/client/rsce_client_video_grid.html5
+?>
+
+<div class="video-grid-container is-animated <?php echo $this->class ?>" <?php echo $this->cssID ?>>
+    <div class="video-grid">
+        <?php foreach ($this->items as $index => $item): ?>
+            <div class="video-item">
+                <a href="https://www.youtube.com/watch?v=<?php echo $item->youtube_id ?>" target="_blank" rel="noopener">
+                    <div class="video-image-wrapper">
+                        <?php if ($image = $this->getImageObject($item->image)): ?>
+                            <img src="<?php echo $image->src ?>" alt="<?php echo $item->title ?>">
+                        <?php endif; ?>
+                        <div class="video-play-button">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <?php if ($item->title): ?>
+                        <h2 class="video-title">
+                            <?php 
+                                // Séparation du dernier mot pour mise en gras si besoin (style maquette)
+                                $words = explode(' ', $item->title);
+                                if (count($words) > 1) {
+                                    $lastWord = array_pop($words);
+                                    echo implode(' ', $words) . '&nbsp;<strong>' . $lastWord . '</strong>';
+                                } else {
+                                    echo '<strong>' . $item->title . '</strong>';
+                                }
+                            ?>
+                        </h2>
+                    <?php endif; ?>
+                </a>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>

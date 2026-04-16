@@ -1,9 +1,23 @@
 $legacy-support-for-ie: false;
 $text-transform: none;
 
+$color1: rgba(22, 128, 214, 0.692);
+$color2: $purple;
+$color3: $green;
+$color4: $red;
+
+// Theme assignments
+$headline-color-1: $white;
+$headline-color-2: $white;
+$highlight-color: $color1;
+$selection-color: $color1;
+$button-background-color: $color1;
+$nav-hover-color: $color1;
+$nav-active-color: $color1;
+
 $max-width: 1500px;
-$breakpoint-desktopxl: 1400px !default;
-$breakpoint-desktop: $max-width !default;
-$breakpoint-tablet: 1000px !default;
-$breakpoint-mobile: 700px !default;
-$breakpoint-mobile-portrait: 600px !default;
+$breakpoint-desktopxl: 1400px;
+$breakpoint-desktop: $max-width;
+$breakpoint-tablet: 1000px;
+$breakpoint-mobile: 700px;
+$breakpoint-mobile-portrait: 600px;

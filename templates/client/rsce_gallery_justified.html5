@@ -1,79 +1,101 @@
 <?php
-    if($this->margin){$gutter = $this->margin;}else{$gutter = 0;};
-    if($this->extrernalMargin){$extrernalMargin = $this->$extrernalMargin;}else{$extrernalMargin = 0;};
-    if($this->rowHeight){$rowHeight = $this->rowHeight;}else{$rowHeight = 200;};
-    if($this->maxRowHeight){$maxRowHeight = $this->maxRowHeight;}else{$maxRowHeight = '200%';};
+    // die('TEMPLATE EXECUTED');
+    $gutter = $this->margin ?: 0;
+    $extrernalMargin = $this->extrernalMargin ?: 0;
+    $rowHeight = $this->rowHeight ?: 200;
+    $maxRowHeight = $this->maxRowHeight ?: '200%';
 
-    if(str_contains($maxRowHeight, '%')){
-        $maxRowHeight = floatval(str_replace('%', '', $maxRowHeight));
-    	$thumbHeight = $maxRowHeight * ($rowHeight/100);
-    }else{
-    	$thumbHeight = $maxRowHeight;
+    if (str_contains($maxRowHeight, '%')) {
+        $maxRowHeightPercent = floatval(str_replace('%', '', $maxRowHeight));
+        $thumbHeight = $maxRowHeightPercent * ($rowHeight / 100);
+    } else {
+        $thumbHeight = (int)$maxRowHeight;
     }
 
-    if($this->maxRowsCount){$maxRowsCount = $this->maxRowsCount;}else{$maxRowsCount = '0';};
-    if($this->randomize){$randomize = 'true';}else{$randomize = 'false';};
-    if($this->captions){$captions = 'true';}else{$captions = 'false';};
+    $maxRowsCount = $this->maxRowsCount ?: 0;
+    $randomize = $this->randomize ? 'true' : 'false';
+    $captions = $this->captions ? 'true' : 'false';
 
-    if (!isset($GLOBALS['justified_gallery_lib']) || !$GLOBALS['justified_gallery_lib']) {
-        $GLOBALS['TL_JAVASCRIPT'][] = 'files/js/justifiedGallery/jquery.justifiedGallery.min.js';
-	    $GLOBALS['TL_CSS'][] = 'files/js/justifiedGallery/justifiedGallery.min.css';
-        $justified_gallery_lib = true;
+    if (!isset($GLOBALS['justified_gallery_lib'])) {
+        $GLOBALS['TL_JAVASCRIPT'][] = 'assets/jquery/js/jquery.min.js|static';
+        $GLOBALS['TL_JAVASCRIPT'][] = 'files/js/justifiedGallery/jquery.justifiedGallery.min.js|static';
+        $GLOBALS['TL_CSS'][] = 'files/js/justifiedGallery/justifiedGallery.min.css|static';
+        $GLOBALS['justified_gallery_lib'] = true;
     }
-    if (!isset($GLOBALS['photoswipe_gallery_lib']) || !$GLOBALS['photoswipe_gallery_lib']) {
-	    $GLOBALS['TL_CSS'][] = 'files/js/photoswipe/photoswipe.css';
-        $photoswipe_gallery_lib = true;
+    if (!isset($GLOBALS['photoswipe_gallery_lib'])) {
+        $GLOBALS['TL_CSS'][] = 'files/js/photoswipe/photoswipe.css|static';
+        $GLOBALS['photoswipe_gallery_lib'] = true;
     }
 ?>
 <?php
     $imageFiles = array();
-    if (is_array($this->images)) {
-        foreach (Contao\FilesModel::findMultipleByUuids($this->images) as $file) {
-            if (
-                in_array(
-                    $file->extension,
-                    Contao\System::getContainer()->getParameter('contao.image.valid_extensions')
-                )
-            )
-            {
-                $imageFiles[] = $file;
+    $rawImages = $this->images;
+    $images = \Contao\StringUtil::deserialize($rawImages);
+    
+    if (is_array($images)) {
+        foreach ($images as $uuid) {
+            $currentUuid = $uuid;
+            if (is_string($uuid) && \Contao\Validator::isUuid($uuid)) {
+                $currentUuid = \Contao\StringUtil::uuidToBin($uuid);
+            }
+            
+            $file = \Contao\FilesModel::findByUuid($currentUuid);
+            if ($file) {
+                if ($file->type === 'folder') {
+                    $subFiles = \Contao\FilesModel::findByPid($file->uuid);
+                    if (!$subFiles) {
+                        $subFiles = \Contao\FilesModel::findByPid($file->id);
+                    }
+                    if ($subFiles) {
+                         foreach ($subFiles as $subFile) {
+                             if ($subFile->type === 'file' && in_array($subFile->extension, \Contao\System::getContainer()->getParameter('contao.image.valid_extensions'))) {
+                                 $imageFiles[] = $subFile;
+                             }
+                         }
+                    }
+                } elseif (in_array($file->extension, \Contao\System::getContainer()->getParameter('contao.image.valid_extensions'))) {
+                    $imageFiles[] = $file;
+                }
             }
         }
     }
 ?>
-<div id="justified-gallery-<?php echo $this-> id ?>" class="photoswipe content-gallery <?php echo $this-> class ?>">
-    <?php foreach ($imageFiles as $image): ?>
-
-        <?php $image = $this->getImageObject($image->uuid, ['', $thumbHeight, 'box']) ?>
+<div id="justified-gallery-<?php echo $this->id ?>" class="photoswipe content-gallery <?php echo $this->class ?>">
+    <?php foreach ($imageFiles as $file): ?>
+        <?php $image = $this->getImageObject($file->uuid, [null, $thumbHeight, 'box']) ?>
+        <?php if ($image): ?>
             <a
                 href="<?= $image->singleSRC ?>"
                 data-pswp-width="<?= $image->width ?>"
                 data-pswp-height="<?= $image->height ?>"
             >
-            <img
-                src="<?= $image->src ?>"
-                alt="<?= $image->alt ?>"
-                <?= $image->imgSize ?>
-                title="<?= $image->caption ?>">
-        </a>
-        <?php //var_dump($image); ?>
+                <img
+                    src="<?= $image->src ?>"
+                    alt="<?= $image->alt ?: $file->name ?>"
+                    <?= $image->imgSize ?>
+                    title="<?= $image->caption ?>">
+            </a>
+        <?php else: ?>
+            <!-- DEBUG: getImageObject failed for uuid <?php echo $file->uuid; ?> -->
+        <?php endif; ?>
     <?php endforeach; ?>
+    <!-- LOGS FRONTEND END -->
 </div>
-<?php  $GLOBALS['TL_BODY'][] = '
+
+<?php $GLOBALS['TL_BODY'][] = '
     <script>
-        //http://miromannino.github.io/Justified-Gallery/options-and-events/
-        $(document).ready(function () {
+        jQuery(function ($) {
             $("#justified-gallery-' . $this->id . '").justifiedGallery({
                 selector: "a, figure:not(.spinner)",
-                rowHeight: "'. $rowHeight . '",
-                maxRowHeight: "'. $maxRowHeight . '",
+                rowHeight: ' . (int)$rowHeight . ',
+                maxRowHeight: "' . $maxRowHeight . '",
                 lastRow: "' . $this->lastRow . '",
-                maxRowsCount: "' . $maxRowsCount . '",
-                margins: ' . $gutter . ',
-                border: ' . $extrernalMargin . ',
+                maxRowsCount: ' . (int)$maxRowsCount . ',
+                margins: ' . (int)$gutter . ',
+                border: ' . (int)$extrernalMargin . ',
                 randomize: ' . $randomize . ',
                 captions: ' . $captions . ',
-                target: "' . $this->target . '",
+                target: "' . ($this->target ?: '_self') . '",
             });
         });
     </script>
@@ -89,7 +111,4 @@
         });
         lightbox.init();
     </script>
-
-'?>
-
-<?php //var_dump($imageFiles); ?>
+' ?>

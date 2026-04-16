@@ -528,3 +528,47 @@ form {
         }
     }
 }
+/* ===========================================
+ * RSCE Custom Height Overrides
+ * ======================================== */
+.centered-wrapper {
+  &.-viewport-height-full {
+    min-height: 100vh;
+  }
+
+  &.-viewport-height-mobile-full {
+    @include mediaquery(tablet) {
+      height: 100vh !important;
+    }
+  }
+
+  &.-viewport-height-mobile {
+    @include mediaquery(tablet) {
+      height: calc(100vh - 3.86667em) !important;
+    }
+  }
+
+  &.-max-viewport-mobile-height-full {
+    @include mediaquery(tablet) {
+      max-height: 100vh !important;
+    }
+  }
+
+  &.-max-viewport-mobile-height {
+    @include mediaquery(tablet) {
+      max-height: calc(100vh - 3.86667em) !important;
+    }
+  }
+
+  &.-min-viewport-mobile-height-full {
+    @include mediaquery(tablet) {
+      min-height: 100vh !important;
+    }
+  }
+
+  &.-min-viewport-mobile-height {
+    @include mediaquery(tablet) {
+      min-height: calc(100vh - 3.86667em) !important;
+    }
+  }
+}

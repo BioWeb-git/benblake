@@ -47,10 +47,18 @@
                         $subFiles = \Contao\FilesModel::findByPid($file->id);
                     }
                     if ($subFiles) {
+                         $folderFiles = array();
                          foreach ($subFiles as $subFile) {
                              if ($subFile->type === 'file' && in_array($subFile->extension, \Contao\System::getContainer()->getParameter('contao.image.valid_extensions'))) {
-                                 $imageFiles[] = $subFile;
+                                 $folderFiles[] = $subFile;
                              }
+                         }
+                         // Sort folder files naturally by name
+                         usort($folderFiles, function($a, $b) {
+                             return strnatcasecmp($a->name, $b->name);
+                         });
+                         foreach ($folderFiles as $folderFile) {
+                             $imageFiles[] = $folderFile;
                          }
                     }
                 } elseif (in_array($file->extension, \Contao\System::getContainer()->getParameter('contao.image.valid_extensions'))) {

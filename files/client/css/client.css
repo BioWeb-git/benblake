@@ -3,7 +3,6 @@
 /* ===========================================
  * Fonts
  * ======================================== */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @font-face {
   font-family: "RockSolid Icons";
   src: url('../fonts/rocksolid-icons.eot');
@@ -15,8 +14,8 @@
   font-family: Montserrat, sans-serif !important;
 }
 
-.font2 {
-  font-family: Montserrat, sans-serif !important;
+.font2, .phrase {
+  font-family: Playwrite NO, sans-serif !important;
 }
 
 html {
@@ -19255,6 +19254,22 @@ form .honeyshow {
   font-size: 1.2em;
 }
 
+.phrase {
+  position: absolute;
+  right: 0;
+  left: 0;
+  width: 100%;
+  bottom: 100px;
+  text-align: center;
+  color: white;
+  font-size: 1em;
+}
+@media screen and (min-width: 1001px) {
+  .phrase {
+    font-size: 1.4em;
+  }
+}
+
 @keyframes titleAppear {
   0% {
     opacity: 0;
@@ -19280,11 +19295,17 @@ h1 strong {
 }
 
 h2,
-h3 {
+h3,
+h4,
+h5,
+h6 {
   font-weight: 300;
 }
 h2 strong,
-h3 strong {
+h3 strong,
+h4 strong,
+h5 strong,
+h6 strong {
   font-weight: 800;
 }
 
@@ -19295,7 +19316,7 @@ body {
   background: black;
 }
 
-.page-header.page-header {
+.page-header {
   padding-top: 0 !important;
 }
 
@@ -19519,7 +19540,6 @@ body.scroll .header-navigation::after {
   .main-navigation ul.level_1 {
     display: flex !important;
     align-items: center;
-    gap: 10px !important;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -19584,7 +19604,7 @@ body.scroll .header-navigation::after {
   }
   body.home .page-header .main-navigation ul.level_1 {
     display: flex !important;
-    gap: 15px !important;
+    gap: 0 !important;
   }
   body.home .page-header .main-navigation ul.level_1 li a,
   body.home .page-header .main-navigation ul.level_1 li strong {
@@ -19596,7 +19616,6 @@ body.scroll .header-navigation::after {
 @media screen and (max-width: 1000px) and (max-width: 700px) {
   body.home .main-navigation-wrapper {
     flex-direction: column !important;
-    gap: 30px !important;
   }
   body.home .logo {
     width: 100% !important;
@@ -19682,8 +19701,8 @@ body.scroll .header-navigation::after {
 .feature-box.portrait .feature-box-image img {
   -webkit-mask-image: url(/files/images/common/mask1.png);
   mask-image: url(/files/images/common/mask1.png);
-  -webkit-mask-size: cover;
-  mask-size: cover;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;

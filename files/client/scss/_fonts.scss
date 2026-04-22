@@ -2,14 +2,12 @@
  * Fonts
  * ======================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-
 // Font
 $font-family1: "Montserrat", sans-serif;
 $font-family: $font-family1;
 $font-weight1: 400;
-$font-family2: "Montserrat", sans-serif;
-$font-weight2: 700;
+$font-family2: "Playwrite NO", sans-serif;
+$font-weight2: 300;
 
 @include font-face("RockSolid Icons", font-files("rocksolid-icons.woff", woff, "rocksolid-icons.ttf", truetype, "rocksolid-icons.svg", svg), "rocksolid-icons.eot", normal, normal);
 
@@ -52,5 +50,5 @@ h3,
 h4,
 h5,
 h6 {
-    @include font2-family();
+    @include font1-family();
 }
